@@ -18,10 +18,10 @@ In each homework directory, there are:
 
 ## Contacts
 
-| Author | Mail | GitHub | 
-| ------ | ---- | ------ |
-| **Lorenzo Bergadano** | s304415@studenti.polito.it | [lolloberga](https://github.com/lolloberga) |
-| **Francesco Capuano** | s295366@studenti.polito.it | [fracapuano](https://github.com/fracapuano) |
-| **Matteo Matteotti** | s294552@studenti.polito.it | [mttmtt31](https://github.com/mttmtt31) |
-| **Enrico Porcelli** | s296649@studenti.polito.it  | [enricoporcelli](https://github.com/enricoporcelli) |
-| **Paolo Rizzo** | paolo.rizzo@studenti.polito.it | [polrizzo](https://github.com/polrizzo) |
+| Author | Serial number | GitHub | 
+| ------ | ------------- | ------ |
+| **Lorenzo Bergadano** | s304415   | [lolloberga](https://github.com/lolloberga) |
+| **Francesco Capuano** | s295366   | [fracapuano](https://github.com/fracapuano) |
+| **Matteo Matteotti**  | s294552   | [mttmtt31](https://github.com/mttmtt31) |
+| **Enrico Porcelli**   | s296649   | [enricoporcelli](https://github.com/enricoporcelli) |
+| **Paolo Rizzo**       | s301961   | [polrizzo](https://github.com/polrizzo) |
