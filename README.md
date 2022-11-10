@@ -6,6 +6,22 @@ The following repository reflects the work done by the authors, in order to solv
 
 -------------------------------------------------------------
 
+## Enviroment
+Once the repo is cloned, some python libraries are required to properly setup your (virtual) enviroment.
+
+
+They can be installed via pip:
+```bash
+    pip install -r requirements.txt
+```
+
+or via conda:
+```bash
+    conda create --name <env_name> --file requirements.txt
+```
+
+-------------------------------------------------------------
+
 ## Content
 
 The `requirements.txt` includes mandatory libraries to run properly the env. 
@@ -13,6 +29,32 @@ The `requirements.txt` includes mandatory libraries to run properly the env.
 In each homework directory, there are:
 * several `.py` files, corresponding to the exercises requested in the requirements
 * `utils` folder contains supporting files
+
+
+-------------------------------------------------------------
+
+## Execution
+
+The `main.py` is the entry point of the execution. To see the help, please execute the command `python main.py -h`
+. This is how to use the program:
+```bash
+usage: main.py [-h] -o HOMEWORK -e EXERCISE
+
+options:
+  -h, --help            show this help message and exit
+  -o HOMEWORK, --homework HOMEWORK
+                        Homework number
+  -e EXERCISE, --exercise EXERCISE
+                        Exercise number
+```
+Two parameters are mandatory:
+* `-o --homerwork` the number of homework you want to execute
+* `-e --exercise` the number of exercise inside the homework you want to execute
+
+Then, you can run the program in this way:
+```bash
+python main.py --homework number_of_homework --exercise number_of_exercise 
+```
 
 -------------------------------------------------------------
 
