@@ -35,7 +35,8 @@ In each homework directory, there are:
 
 ## Execution
 
-The `main.py` is the entry point of the execution. To see the help, please execute the command `python main.py -h`
+The `main.py` is the entry point of the execution.<br>
+To see the help, please execute the command `python main.py -h`
 . This is how to use the program:
 ```bash
 usage: main.py [-h] -o HOMEWORK -e EXERCISE
