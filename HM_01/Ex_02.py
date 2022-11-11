@@ -123,7 +123,7 @@ def execute():
                   ["p3", "b1"], ["p3", "b4"], ["p4", "b1"], ["p4", "b2"], ["p4", "b4"],
                   ["b1", "d"], ["b2", "d"], ["b3", "d"], ["b4", "d"]]
     capacity_array = np.array(
-        [1e4, 1e4, 1e4, 1e4, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 3, 2, 2])  # 1e4 is the biggest integer power that does
+        [1e4, 1e4, 1e4, 1e4, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 3, 2, 2])  # 1e4 is the biggest integer power that does not
     # cause errors or warnings
 
     obtain_multipliers(B=B, edges=edges_list, G=G, capacity=capacity_array)
