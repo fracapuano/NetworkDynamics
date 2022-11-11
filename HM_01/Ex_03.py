@@ -23,10 +23,10 @@ def execute():
     nx.draw(G, pos, with_labels=True)
 
     # Reshape
-    f = sc.loadmat('utils/flow.mat')["flow"].reshape(28, )
-    C = sc.loadmat('utils/capacities.mat')["capacities"].reshape(28, )
-    B = sc.loadmat('utils/traffic.mat')["traffic"]
-    l = sc.loadmat('utils/traveltime.mat')["traveltime"].reshape(28, )
+    f = sc.loadmat('./HM_01/utils/flow.mat')["flow"].reshape(28, )
+    C = sc.loadmat('./HM_01/utils/capacities.mat')["capacities"].reshape(28, )
+    B = sc.loadmat('./HM_01/utils/traffic.mat')["traffic"]
+    l = sc.loadmat('./HM_01/utils/traveltime.mat')["traveltime"].reshape(28, )
 
     # Dictionary to convert edges to capacities
     conversion_edges_to_capacity = {('1', '2'): 0, ('2', '3'): 1, ('3', '4'): 2,
