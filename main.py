@@ -12,9 +12,10 @@ def validate_homework_exercise(homework_number, exercise_number):
     exercises = HOMEWORK_STRUCTURE.get(homework_number, None)
     if exercises is None:
         return False
-    if exercise_number not in exercises[0]:
-        return False
-    return True
+    for pair in exercises:
+        if exercise_number == pair[0]:
+            return True
+    return False
 
 
 def set_mandatory_args(parser):
