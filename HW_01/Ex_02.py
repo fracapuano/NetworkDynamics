@@ -1,4 +1,4 @@
-from HM_01.utils.utils import *
+from HW_01.utils.utils import *
 
 
 def execute():
