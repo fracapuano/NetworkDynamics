@@ -61,7 +61,7 @@ python main.py --homework number_of_homework --exercise number_of_exercise
 
 ## Contacts
 
-| Author | Serial number | GitHub | 
+| Author | Student Id | GitHub | 
 | ------ | ------------- | ------ |
 | **Lorenzo Bergadano** | s304415   | [lolloberga](https://github.com/lolloberga) |
 | **Francesco Capuano** | s295366   | [fracapuano](https://github.com/fracapuano) |
