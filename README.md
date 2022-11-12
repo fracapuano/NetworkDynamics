@@ -6,6 +6,17 @@ The following repository reflects the work done by the authors, in order to solv
 
 -------------------------------------------------------------
 
+## Cloning the repo
+To cloning the repo throgh HTTPS or SSH, you must have installed Git on your operating system.<br>
+Then you can open a new terminal and type the following command (this is the cloning throgh HTTPS):
+```bash
+    git clone https://github.com/fracapuano/NetworkDynamics.git
+```
+
+If you don't have installet Git, you can simply download the repository by pressing <i>"Download ZIP"</i>.
+
+-------------------------------------------------------------
+
 ## Enviroment
 Once the repo is cloned, some python libraries are required to properly setup your (virtual) enviroment.
 
