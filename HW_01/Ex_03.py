@@ -51,19 +51,28 @@ def execute():
 
     # --------------- Question 3.1 -------------------------------------
     # Shortest path, found as the shortest path in an empty network
-    print(nx.shortest_path(G, source="1", target="17", weight="weight"))
-
+    pprint("--------------- Question 3.1 ------------------")
+    pprint("The shortest path in the network is the following:")
+    pprint(nx.shortest_path(G, source="1", target="17", weight="weight"))
+    pprint('')
+    
     # --------------- Question 3.2 -------------------------------------
     # Max-flow between nodes 1 and 17
+    pprint("--------------- Question 3.2 ---------------")
     flow_value, _ = nx.maximum_flow(G, "1", "17")
-    print(flow_value)
-
+    pprint(f"The maximum flow between node 1 and node 17 is {flow_value}")
+    print("")
+    
     # --------------- Question 3.3 -------------------------------------
     # Given the flow vector in flow.mat, compute the external inflow ν satisfying Bf = ν.
     v = B @ f
+    pprint("--------------- Question 3.3 ---------------")
+    pprint("The external inflow is:")
     pprint(v)
+    pprint('')
 
     # --------------- Question 3.4 -------------------------------------
+    pprint("--------------- Question 3.4 ---------------")
     n_edges = len(C)
 
     f_ = cp.Variable(n_edges)
@@ -89,10 +98,13 @@ def execute():
     result = prob.solve()
     # result = prob.solve(solver = "SCS")#, verbose = True)
     # The optimal value for f is stored in `f.value`.
-    print("Optimal f:", f_.value)
+    pprint("SO-TAP solution - the flow at social optimum is:")
+    pprint(f_.value)
+    print("")
     opt_flow = f_.value
 
     # --------------- Question 3.5 -------------------------------------
+    pprint("--------------- Question 3.5 ---------------")
     # Construct the problem.
     f_w = cp.Variable(n_edges)
     cost_function = 0
@@ -106,12 +118,13 @@ def execute():
     # The optimal objective value is returned by `prob.solve()`.
     result_w = prob_w.solve()
     # The optimal value for f is stored in `f.value`.
-    print("Wardrop equilibrium:", f_w.value)
+    pprint("The flow at Wardrop equilibrium is:")
+    print(f_w.value)
+    print('')
 
     # --------------- Question 3.6 -------------------------------------
     # find marginal tolls: for each edge the toll equals f*_e d_e'(f_e*)
-    # for affine delays l_e + b_e f_e, this reads b_e f*_e
-    # in this example b = [1,0]
+    pprint("--------------- Question 3.6 ---------------")
     omega = opt_flow * C * l / (opt_flow - C) ** 2
 
     # Construct the problem.
@@ -129,9 +142,12 @@ def execute():
     # The optimal objective value is returned by `prob.solve()`.
     result_t = prob_t.solve()
     # The optimal value for f is stored in `f.value`.
-    print("f at Wardrop equilibrium with tolls:", f_t.value)
+    pprint("The flow at Wardop equilibrium, after having added the tolls, is:")
+    print(f_t.value)
+    print("")
 
     # --------------- Question 3.7 ------------------------------------
+    pprint("--------------- Question 3.7 ---------------")
     n_edges = len(C)
 
     f_ = cp.Variable(n_edges)
@@ -157,27 +173,18 @@ def execute():
     result = prob.solve()
     # result = prob.solve(solver = "SCS")#, verbose = True)
     # The optimal value for f is stored in `f.value`.
-    print("Optimal f:", f_.value)
+    print("When changing the SO-TAP's cost function into the total additional delay compared to the total delay in free flow,\nthe flow at social optimum f* is:")
+    print(f_.value)
+    print('The Wardrop equilibrium is the same as before, as the delay function d_e did not change.')
+    print('')
     opt_flow = f_.value
 
-    # Construct the problem.
-    f_w = cp.Variable(n_edges)
-    cost_function = 0
-    for el in range(n_edges):
-        integral_e = C[el] * l[el] * (1 - cp.log(1 - f_w[el] / C[el]))
-        cost_function += integral_e
-    objective_w = cp.Minimize(cost_function)
-    constraints_w = [B @ f_w == nu, f_w >= 0, f_w <= C]
-    prob_w = cp.Problem(objective_w, constraints_w)
 
-    # The optimal objective value is returned by `prob.solve()`.
-    result_w = prob_w.solve()
-    # The optimal value for f is stored in `f.value`.
-    print("Wardrop equilibrium:", f_w.value)
 
-    # find marginal tolls: for each edge the toll equals f*_e d_e'(f_e*)
-    # for affine delays l_e + b_e f_e, this reads b_e f*_e
-    # in this example b = [1,0]
+    # --------------- Question 3.8 ------------------------------------
+    pprint("--------------- Question 3.8 ---------------")
+    print("In view of the new cost function, for each edge the toll is set to:")
+    print("f*_e d_e'(f*_e) - l_e")
     omega = opt_flow * C * l / (opt_flow - C) ** 2 - l
 
     # Construct the problem.
@@ -195,4 +202,5 @@ def execute():
     # The optimal objective value is returned by `prob.solve()`.
     result_t = prob_t.solve()
     # The optimal value for f is stored in `f.value`.
-    print("Wardrop equilibrium with tolls:", f_t.value)
+    print("The flow at Wardrop equilibrium with the said tolls is:")
+    print(f_t.value)
