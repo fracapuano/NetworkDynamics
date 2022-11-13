@@ -16,6 +16,7 @@ def execute():
         nx.draw(G, pos, with_labels=True)
 
     # --------------- Question 1.1 -------------------------------------
+    print("Question 1")
     # giving capacity to the graph G
     G = embed_capacity(G, capacity = np.array([2,1,2,1,2,1]))
     # obtaining maximal flow for this capacited graph
@@ -26,6 +27,7 @@ def execute():
     print("The maximal throughput is:", results_cut[0])
     print("The optimal flow vector is: \n")
     pprint(list(zip(G.edges, obtain_flow_vector(results_flow[-1], edges))))
+    print("*"*50)
 
     # --------------- Question 1.2 -------------------------------------
     capacities = np.array([
@@ -39,7 +41,7 @@ def execute():
         "Removing less than c_left units of capacity from *saturated* edges only",
         "Removing more than c_left units of capacity (thus impacting both non saturated *and* saturated edges)"
     ]
-
+    print("Question 2")
     for c, description in zip(capacities, descriptions):
         print()
         print(description)
@@ -53,9 +55,9 @@ def execute():
         print("The optimal flow vector is: \n")
         pprint(list(zip(G.edges, obtain_flow_vector(results_flow[-1], edges))))
 
-
-
     # --------------- Question 1.3 -------------------------------------
+    print("*"*50)
+    print("Question 3")
     # node-link incidence matrix
     B = np.array([
         # e1 e2 e3  e4 e5 e6
@@ -76,7 +78,6 @@ def execute():
 
     mass_conservation = hstack((source, np.zeros(len(G.nodes)-2), sink))
 
-
     maxflow = Problem(
         # objective function: maximize out-flow from source
         Maximize(source),
@@ -92,7 +93,6 @@ def execute():
     )
     maxflow.solve()
 
-
     cuts = [
         list("o"),
         list("oa"),
@@ -103,7 +103,6 @@ def execute():
         list("obc"),
         list("oabc")
     ]
-
 
     df = pd.DataFrame(zip(
         edges,
