@@ -3,8 +3,10 @@ from markov_utils import *
 from tqdm import tqdm
 from scipy import linalg
 from itertools import product
+from statistics import variance
+import matplotlib.pyplot as plt
 
-n_simulations = int(2)
+n_simulations = int(5e2)
 
 # activation rate matrix
 L = np.array([
@@ -112,3 +114,28 @@ print(
     f"Expected Hitting Time from node '{from_o.input_start.name}' to node '{target_node.name}':" 
     + " {:.4f} t.u.".format(hitting_time[node_index[from_o.input_start.name]])
 )
+print("*"*50)
+
+print(f"Point (e): French-DeGroot model using matrix Lambda as weight matrix'")
+
+# simulating French-DeGroot in discrete time
+n_opinions = 5
+n_talks = int(1e2)
+intalks_variance = np.zeros((n_simulations, n_talks))
+starts = np.zeros((n_simulations, len(omegas)))
+save_story = False
+
+for simulation in tqdm(range(n_simulations)): 
+    starting_condition = np.random.choice(np.arange(n_opinions), size=len(omegas))
+    starts[simulation, :] = starting_condition
+    # talking
+    talk_opinion = starting_condition
+    for talk in range(n_talks):
+        talk_opinion = P @ talk_opinion
+        intalks_variance[simulation, talk] = variance(talk_opinion)
+    final_opinion = talk_opinion
+
+if save_story:
+    np.savetxt(fname="intalk_variance.txt", X=intalks_variance)
+    np.savetxt(fname="initialcondition_variance.txt", X=starts)
+
