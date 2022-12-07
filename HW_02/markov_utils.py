@@ -1,6 +1,19 @@
 import numpy as np
 from typing import Union, Iterable, Tuple
 
+def remove_i(arr:np.ndarray, idx:int)->np.ndarray:
+    """This function remove rows and columns associated to index "idx"
+
+    Args:
+        arr (np.ndarray): input nd-array
+        idx (int): index corresponding at row and column to delete
+
+    Returns:
+        np.array: new array after deletion
+    """
+    # first removes idx-th row and then idx-th column
+    return np.delete(np.delete(arr=arr, obj=idx, axis=0), obj=idx, axis=1)
+
 class Node: 
     def __init__(self, name:str, degree:float): 
         self.name = name
