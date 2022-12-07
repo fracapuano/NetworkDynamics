@@ -6,7 +6,7 @@ from itertools import product
 from statistics import variance
 import matplotlib.pyplot as plt
 
-n_simulations = int(5e2)
+n_simulations = int(5e3)
 
 # activation rate matrix
 L = np.array([
@@ -119,23 +119,38 @@ print("*"*50)
 print(f"Point (e): French-DeGroot model using matrix Lambda as weight matrix'")
 
 # simulating French-DeGroot in discrete time
-n_opinions = 5
+n_opinions = 10
 n_talks = int(1e2)
 intalks_variance = np.zeros((n_simulations, n_talks))
 starts = np.zeros((n_simulations, len(omegas)))
-save_story = False
+save_talks = False
 
 for simulation in tqdm(range(n_simulations)): 
     starting_condition = np.random.choice(np.arange(n_opinions), size=len(omegas))
     starts[simulation, :] = starting_condition
-    # talking
     talk_opinion = starting_condition
-    for talk in range(n_talks):
-        talk_opinion = P @ talk_opinion
-        intalks_variance[simulation, talk] = variance(talk_opinion)
-    final_opinion = talk_opinion
+    
+    if save_talks: 
+        # talking
+        for talk in range(n_talks):
+            talk_opinion = P @ talk_opinion
+            intalks_variance[simulation, talk] = variance(talk_opinion)
+        final_opinion = talk_opinion
+    else: 
+        # shouting one to each others real fast
+        final_opinion = np.linalg.matrix_power(a=P, n=n_talks) @ starting_condition
 
-if save_story:
+
+if save_talks:
     np.savetxt(fname="intalk_variance.txt", X=intalks_variance)
     np.savetxt(fname="initialcondition_variance.txt", X=starts)
 
+var_tolerance = 1e-9
+consensus_reached = "did" if variance(final_opinion) <= var_tolerance else "did not"
+print("Agents opinions: ")
+for node, opinion in zip(nodes, final_opinion):
+    print(
+        "Node '{}' has opinion {:.4f}".format(node, opinion)
+    )
+print(f"Agents {consensus_reached} reach consensus!")
+print("*"*50)
