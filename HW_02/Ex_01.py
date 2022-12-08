@@ -55,7 +55,7 @@ node_objects = [Node(name=node_name, degree=degree) for node_name, degree in zip
 node_o, node_a, node_b, node_c, node_d = node_objects
 
 # point (a)
-print("Point (a): (empirical) Expected Return Time from node 'a'")
+print("Question (a): (empirical) Expected Return Time from node 'a'")
 
 from_a = RandomWalk(start_node=node_a, nodes=node_objects, P=P)
 
@@ -71,7 +71,7 @@ print("Average (empirical) Return Time from node '{}' : {:.4f} t.u.".format(
 print("*"*50)
 
 # point (b)
-print("Point (b): (theoretical) Expected Return Time from node 'a'")
+print("Question (b): (theoretical) Expected Return Time from node 'a'")
 
 # average return time can also be obtained from a theorical standpoint
 Lapl = D - L
@@ -88,7 +88,7 @@ print("Expected Return Time from node {}: {:.4f} t.u.".format(
 ))
 print("*"*50)
 
-print("Point (c): (empirical) Hitting Time from node 'o' to node 'd'")
+print("Question (c): (empirical) Hitting Time from node 'o' to node 'd'")
 
 from_o = RandomWalk(start_node=node_o, nodes=node_objects, P=P)
 
@@ -103,7 +103,7 @@ print("*"*50)
 
 destination_node = "d"
 target_node = node_objects[node_index[destination_node]]
-print(f"Point (d): (theoretical) Expected Hitting Time from node '{from_o.input_start.name}' to node '{target_node.name}'")
+print(f"Question (d): (theoretical) Expected Hitting Time from node '{from_o.input_start.name}' to node '{target_node.name}'")
 
 # P_hat coincides with P when row and column related to node "o" are removed
 P_hat = remove_i(arr=P, idx=node_index[destination_node])
@@ -119,7 +119,7 @@ print(
 )
 print("*"*50)
 
-print("Point (e): French-DeGroot model using matrix Lambda as weight matrix'")
+print("Question (e): French-DeGroot model using matrix Lambda as weight matrix'")
 
 # simulating French-DeGroot in discrete time
 n_opinions = 10
@@ -162,7 +162,7 @@ for node, opinion in zip(nodes, final_opinion):
 print(f"Agents {consensus_reached} reach consensus!")
 print("*"*50)
 
-print("Point (f): Variance of final opinions")
+print("Question (f): Variance of final opinions")
 
 # actual 'observation', in other labs indicated as "mu"
 avg_opinion = 10.
@@ -205,7 +205,7 @@ for idx, pair in enumerate(theoretical_simulated_pairs):
 print("Average difference between simulations for various variance levels is {:.3e}".format(((theoretical_variance - simulated_consensus_variance)**2).mean()))
 print("*"*50)
 
-print("Point (g): Opinion dynamics with Graph modifications")
+print("Question (g): Opinion dynamics with Graph modifications")
 
 # new activation rate matrix
 L_g = L.copy()
@@ -256,12 +256,12 @@ if save_talks:
 # long-term probability distribution in discrete time
 pi_hat_g = linalg.null_space(P_g.T - np.eye(len(omegas))).reshape(-1,); pi_hat_g = pi_hat_g / pi_hat_g.sum()
 
-print("Invariant probability distribution for point (g):")
+print("Invariant probability distribution:")
 for idx, el in enumerate(pi_hat_g): 
     print(f"node '{nodes[idx]}':" + "{:.4f}".format(el))
 
 print("*"*50)
-print("Point (h): Opinion dynamics with Graph modifications")
+print("Question (h): Opinion dynamics with Graph modifications")
 
 # new activation rate matrix
 L_h = L.copy()
