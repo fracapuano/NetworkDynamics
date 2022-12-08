@@ -8,6 +8,7 @@ import matplotlib.pyplot as plt
 import time
 from pprint import pprint
 
+
 n_simulations = int(5e3)
 
 # activation rate matrix
@@ -118,12 +119,15 @@ print(
 )
 print("*"*50)
 
-print(f"Point (e): French-DeGroot model using matrix Lambda as weight matrix'")
+print("Point (e): French-DeGroot model using matrix Lambda as weight matrix'")
 
 # simulating French-DeGroot in discrete time
 n_opinions = 10
 n_talks = int(1e2)
 intalks_variance = np.zeros((n_simulations, n_talks))
+# tensor storing opinion evolutions over all possible simulations (each slice corresponds to a single simulation. Each row corresponds
+# to a single talk opinion).
+opinions = np.zeros((n_simulations, n_talks, len(omegas)))
 starts = np.zeros((n_simulations, len(omegas)))
 save_talks = False
 
@@ -136,16 +140,17 @@ for simulation in tqdm(range(n_simulations)):
         # talking
         for talk in range(n_talks):
             talk_opinion = P @ talk_opinion
+            opinions[simulation, talk, :] = talk_opinion
             intalks_variance[simulation, talk] = variance(talk_opinion)
         final_opinion = talk_opinion
     else: 
         # shouting one to each others real fast
         final_opinion = np.linalg.matrix_power(a=P, n=n_talks) @ starting_condition
 
-
 if save_talks:
     np.savetxt(fname="intalk_variance.txt", X=intalks_variance)
     np.savetxt(fname="initialcondition_variance.txt", X=starts)
+    np.savetxt(fname="opinions.txt", X=opinions)
 
 var_tolerance = 1e-9
 consensus_reached = "did" if variance(final_opinion) <= var_tolerance else "did not"
@@ -157,7 +162,7 @@ for node, opinion in zip(nodes, final_opinion):
 print(f"Agents {consensus_reached} reach consensus!")
 print("*"*50)
 
-print(f"Point (f): Variance of final opinions")
+print("Point (f): Variance of final opinions")
 
 # actual 'observation', in other labs indicated as "mu"
 avg_opinion = 10.
@@ -199,3 +204,117 @@ for idx, pair in enumerate(theoretical_simulated_pairs):
 
 print("Average difference between simulations for various variance levels is {:.3e}".format(((theoretical_variance - simulated_consensus_variance)**2).mean()))
 print("*"*50)
+
+print("Point (g): Opinion dynamics with Graph modifications")
+
+# new activation rate matrix
+L_g = L.copy()
+
+edge1, edge2 = "d,a", "d,c"
+edges_to_remove = [edge1, edge2]
+# removing edges
+for e in edges_to_remove: 
+    idx1, idx2 = node_index[e.split(",")[0]], node_index[e.split(",")[1]]
+    L_g[idx1, idx2] = 0
+
+# add self-loops for those nodes having a zero degree to be able to well define P
+for row in range(L_g.shape[0]):
+    L_g[row,row] = 1 if L_g[row,:].sum() <= 1e-9 else L_g[row, row]
+
+D_g = np.diag(L_g.sum(axis=1))
+P_g = np.linalg.inv(D_g) @ L_g
+
+# simulating French-DeGroot in discrete time
+n_opinions = 10
+n_talks = int(1e2)
+
+opinions = np.zeros((n_simulations, n_talks, len(omegas)))
+starts = np.zeros((n_simulations, len(omegas)))
+save_talks = False
+
+for simulation in tqdm(range(n_simulations)): 
+    starting_condition = np.random.choice(np.arange(n_opinions), size=len(omegas))
+    starts[simulation, :] = starting_condition
+    
+    if save_talks: 
+        talk_opinion = starting_condition
+        # talking
+        for talk in range(n_talks):
+            talk_opinion = P_g @ talk_opinion
+            opinions[simulation, talk, :] = talk_opinion
+            intalks_variance[simulation, talk] = variance(talk_opinion)
+        final_opinion = talk_opinion
+    else: 
+        # shouting one to each others real fast
+        final_opinion = opinion_dynamics(matrix=P_g, initial_condition=starting_condition, n_talks=n_talks)
+
+if save_talks:
+    np.savetxt(fname="intalk_variance_(g).txt", X=intalks_variance)
+    np.savetxt(fname="initialcondition_variance_(g).txt", X=starts)
+    np.savetxt(fname="opinions_(g).txt", X=opinions.reshape(n_simulations * n_talks, -1))
+
+# long-term probability distribution in discrete time
+pi_hat_g = linalg.null_space(P_g.T - np.eye(len(omegas))).reshape(-1,); pi_hat_g = pi_hat_g / pi_hat_g.sum()
+
+print("Invariant probability distribution for point (g):")
+for idx, el in enumerate(pi_hat_g): 
+    print(f"node '{nodes[idx]}':" + "{:.4f}".format(el))
+
+print("*"*50)
+print("Point (h): Opinion dynamics with Graph modifications")
+
+# new activation rate matrix
+L_h = L.copy()
+
+edge1, edge2 = "c,b", "d,a"
+edges_to_remove = [edge1, edge2]
+# removing edges
+for e in edges_to_remove: 
+    idx1, idx2 = node_index[e.split(",")[0]], node_index[e.split(",")[1]]
+    L_h[idx1, idx2] = 0
+
+# add self-loops for those nodes having a zero degree to be able to well define P
+for row in range(L_h.shape[0]):
+    L_h[row,row] = 1 if L_h[row,:].sum() <= 1e-9 else L_h[row, row]
+
+D_h = np.diag(L_h.sum(axis=1))
+P_h = np.linalg.inv(D_h) @ L_h
+
+# simulating French-DeGroot in discrete time
+n_opinions = 10
+n_talks = int(1e2)
+
+opinions = np.zeros((n_simulations, n_talks, len(omegas)))
+starts = np.zeros((n_simulations, len(omegas)))
+save_talks = False
+
+for simulation in tqdm(range(n_simulations)): 
+    starting_condition = np.random.choice(np.arange(n_opinions), size=len(omegas))
+    starts[simulation, :] = starting_condition
+    
+    if save_talks: 
+        talk_opinion = starting_condition
+        # talking
+        for talk in range(n_talks):
+            talk_opinion = P_h @ talk_opinion
+            opinions[simulation, talk, :] = talk_opinion
+            intalks_variance[simulation, talk] = variance(talk_opinion)
+        final_opinion = talk_opinion
+    else: 
+        # shouting one to each others real fast
+        final_opinion = opinion_dynamics(matrix=P_h, initial_condition=starting_condition, n_talks=n_talks)
+
+if save_talks:
+    np.savetxt(fname="intalk_variance_(h).txt", X=intalks_variance)
+    np.savetxt(fname="initialcondition_variance_(h).txt", X=starts)
+    np.savetxt(fname="opinions_(h).txt", X=opinions.reshape(n_simulations * n_talks, -1))
+
+# long-term probability distribution in discrete time
+pi_hat_h = linalg.null_space(P_h.T - np.eye(len(omegas))).reshape(-1,); pi_hat_h = pi_hat_h / pi_hat_h.sum()
+
+print("Invariant probability distribution for point (h):")
+for idx, el in enumerate(pi_hat_h): 
+    print(f"node '{nodes[idx]}':" + "{:.4f}".format(np.abs(el)))
+print("*"*50)
+
+print(f"{bcolors.BOLD}{bcolors.WARNING}" + "\t"*6 + "Exercise 1: complete!"+f"{bcolors.ENDC}{bcolors.ENDC}")

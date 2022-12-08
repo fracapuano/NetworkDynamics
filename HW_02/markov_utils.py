@@ -1,6 +1,35 @@
 import numpy as np
 from typing import Union, Iterable, Tuple
 
+class bcolors:
+    HEADER = '\033[95m'
+    OKBLUE = '\033[94m'
+    OKCYAN = '\033[96m'
+    OKGREEN = '\033[92m'
+    WARNING = '\033[93m'
+    FAIL = '\033[91m'
+    ENDC = '\033[0m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
+
+def opinion_dynamics(matrix:np.ndarray, initial_condition:np.ndarray=None, n_talks:int=int(1e2))->np.ndarray:
+    """This function simulates the opinion dynamics mechanism considering as system matrix 'matrix' from 'initial_condition' for 'n_talks'.
+
+    Args: 
+        matrix (np.ndarray): Opinions system matrix
+        initial_condition (np.array, optional): Starting condition for agents' opinion. When None, it is randomly generated. Defaults to None.
+        n_talks (int, optional): Number of 'talks' in opinion mechanism.
+    
+    Returns: 
+        np.ndarray: Agents' opinions after n_talks. If n_talks is large enough, it converges to a consensus vector (if any).
+    """
+    if initial_condition.shape[0] != matrix.shape[0]: 
+        raise ValueError(f"Initial condition must be an array of shape ({matrix.shape[0]},)!")
+    # tolerance on final variance to decleare consensus
+    consensus_tol = 1e-9
+    # after n_talks...
+    return np.linalg.matrix_power(a=matrix, n=n_talks) @ initial_condition
+
 def remove_i(arr:np.ndarray, idx:int)->np.ndarray:
     """This function remove rows and columns associated to index "idx"
 
