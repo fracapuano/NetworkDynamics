@@ -5,6 +5,8 @@ from scipy import linalg
 from itertools import product
 from statistics import variance
 import matplotlib.pyplot as plt
+import time
+from pprint import pprint
 
 n_simulations = int(5e3)
 
@@ -153,4 +155,47 @@ for node, opinion in zip(nodes, final_opinion):
         "Node '{}' has opinion {:.4f}".format(node, opinion)
     )
 print(f"Agents {consensus_reached} reach consensus!")
+print("*"*50)
+
+print(f"Point (f): Variance of final opinions")
+
+# actual 'observation', in other labs indicated as "mu"
+avg_opinion = 10.
+# simulating with various level of variance, i.e. noise affecting agents' evaluation of mu
+agents_error = np.array([1e-2, 1e-1, 1, 1e1, 1e2])
+simulated_consensus_variance = np.zeros_like(agents_error)
+sub_simulations = int(1e3)
+
+start_time = time.time()
+for simulation, variance_ in (enumerate(agents_error)): 
+    # std_deviation to be passed to normal distribution
+    agents_std = np.sqrt(variance_)
+    subsimulation_variance = np.zeros(sub_simulations)
+    # simulating sub_simulations different starting conditions
+    for sub_simulation in range(sub_simulations):
+        # iid samples with known variance
+        starting_condition = np.random.normal(loc=avg_opinion, scale=agents_std, size=len(omegas))
+        # talking
+        final_opinion = np.linalg.matrix_power(a=P, n=n_talks) @ starting_condition
+        # in each subsimulation, the final opinion (i.e. empirical consensus) variance with respect to initial opinion
+        # is obtained according to square difference between mean of consensus and average opinion
+        subsimulation_variance[sub_simulation] = (final_opinion.mean() - avg_opinion)**2
+    # average variance between sub-simulation
+    simulated_consensus_variance[simulation] = subsimulation_variance.mean()
+
+sim_time = time.time() - start_time
+print("Total simulation time: {:.4f} s\n".format(sim_time))
+
+# final opinion variance can also be obtained from a more practical standpoint
+# long-term probability distribution in discrete time
+pi_hat = linalg.null_space(P.T - np.eye(len(omegas))).reshape(-1,); pi_hat = pi_hat / pi_hat.sum()
+theoretical_variance = agents_error * (pi_hat**2).sum()
+
+theoretical_simulated_pairs = zip(simulated_consensus_variance, theoretical_variance)
+
+for idx, pair in enumerate(theoretical_simulated_pairs): 
+    print(f"With average starting opinion {avg_opinion} and variance {agents_error[idx]}")
+    print("\t(empirical) Consensus variance equals: {:.3e} (theoretical variance is {:.3e})".format(pair[0], pair[1]))
+
+print("Average difference between simulations for various variance levels is {:.3e}".format(((theoretical_variance - simulated_consensus_variance)**2).mean()))
 print("*"*50)
