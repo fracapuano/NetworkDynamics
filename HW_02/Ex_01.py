@@ -1,5 +1,4 @@
-import numpy as np
-from markov_utils import *
+from HW_02.utils.markov_utils import *
 from tqdm import tqdm
 from scipy import linalg
 from itertools import product
