@@ -47,10 +47,6 @@ class Node:
     def __init__(self, name:str, degree:float): 
         self.name = name
         self.degree = degree
-        self.number_of_particles = 0
-
-    def increment_particles(self): 
-        self.number_of_particles += 1
     
     @property
     def rate(self): 
@@ -71,14 +67,20 @@ class Node:
     def delete_rate(self): 
         self.degree = None
     
+    @rate.getter
+    def get_rate(self): 
+        return self.rate
+
     def t_next(self)->float:
         """This function draws the next transition instant from an exponentially-distributed random variable
-        parametrized by node degree.
+        parametrized by a given rate.
 
         Returns: 
             float: t_next, i.e. the moment in which transition will take place.
         """
-        return -np.log(np.random.rand()) / self.degree
+        # sometimes rate might be 0, in that case t_next should simply be a very large number (such as 1e6)
+        next_transition = -np.log(np.random.rand()) / self.get_rate if self.get_rate != 0 else 1e6
+        return next_transition
     
 class Walk: 
     def __init__(self, start_node:object, start_transition:float=None): 
@@ -258,3 +260,94 @@ class RandomWalk(Walk):
             self.transition_times.pop(-1)
         
         return self.walk, self.times_array.sum()
+    
+class CounterNode(Node): 
+    """Overrides rate method of node to make the rate dependant on the number of particles inside too."""
+    def __init__(self, name:str, degree:float, nparticles_init:int=0):
+        super().__init__(name=name, degree=degree) 
+        self.nparticles = nparticles_init
+
+    def increment_particles(self, increment:int=1): 
+        """This function increments internal number of particles by a quantity equal to increment"""
+        self.nparticles += increment
+    
+    def decrement_particles(self, decrement:int=1): 
+        """This function decrements internal number of particles by a quantity equal to increment"""
+        self.nparticles = max(0, self.nparticles - decrement)
+    
+    @property
+    def rate(self):
+        """Overrides parent rate with a rate proportional to number of particles"""
+        return self.degree * self.nparticles
+
+class NodeRandomWalk:
+    def __init__(self, counting_nodes:Iterable[CounterNode], P:np.ndarray, constant_particles:bool=True):
+        self.nodes = counting_nodes
+        self.matrix = P
+        # whether or not the number of particles is to be considered constant (no input from outside)
+        self.constant_particles = constant_particles
+        self.total_particles = sum([node.nparticles for node in self.nodes])
+        self.nodes_index = {node:idx for idx, node in enumerate(self.nodes)}
+
+        # making every node tick
+        self.ticks = np.array([node.t_next() for node in self.nodes])
+        # storing earliest tick and quickest node to tick
+        self.clocks = [np.min(self.ticks)]
+        self.quick_nodes = [self.nodes[np.argmin(self.ticks)]]
+        # list of list having as many elements as the number of nodes (one sublist for each node, each storing number of particles evolution)
+        self.nparticles_history = [[n.nparticles] for n in self.nodes]
+    
+    @property
+    def times_array(self): 
+        return np.array(self.clocks)
+    
+    def append_newtick(self): 
+        # storing the value of the node that ticked first
+        earliest_tick = np.min(self.ticks)
+        self.clocks.append(earliest_tick)
+
+    def append_newticker(self):
+        # storing the quickest node to tick
+        quickest_node = np.argmin(self.ticks)
+        self.quick_nodes.append(self.nodes[quickest_node])
+    
+    def update_ticks(self): 
+        # making every node tick
+        self.ticks = np.array([node.t_next() for node in self.nodes])
+    
+    def walk_until(self, max_transitions:int=None, max_time:float=None)->Union[np.ndarray, np.array]:
+        # checking input sanity with logical "xor"
+        if not((max_transitions is None) ^ (max_time is None)): 
+            print(f"Provided inputs - max_transitions={max_transitions}, max_time={max_time}")
+            raise ValueError("max_steps and max_time cannot be defined or none at the same time!")
+        
+        # stopping condition
+        if max_transitions is not None: 
+            condition = lambda arr: len(arr) <= max_transitions
+        else:
+            condition = lambda arr: arr.sum() <= max_time
+        
+        while condition(self.times_array):
+            current_node = self.quick_nodes[-1]
+            jump_probabilities = self.matrix[self.nodes_index[current_node], :]
+            next_node = np.random.choice(self.nodes, p=jump_probabilities)
+            # move one particle from one node to another
+            if next_node == current_node: 
+                pass
+            else: 
+                current_node.decrement_particles()
+                next_node.increment_particles(increment = 0 if self.constant_particles and next_node.nparticles == self.total_particles else 1)
+
+            # record changes in number of particles in nodes
+            for n in self.nodes:
+                self.nparticles_history[self.nodes_index[n]].append(n.nparticles)
+            
+            # recompute ticks
+            self.update_ticks()
+            # update times array
+            self.append_newtick()
+            # update list of nodes that ticked
+            self.append_newticker()
+        
+        # return evolution of number of particles and time axis
+        return np.array(self.nparticles_history), self.times_array
