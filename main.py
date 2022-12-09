@@ -3,8 +3,11 @@ from HW_01.Ex_01 import execute as h1e1
 from HW_01.Ex_02 import execute as h1e2
 from HW_01.Ex_03 import execute as h1e3
 
+from HW_02.Ex_03 import execute as h2e3
+
 HOMEWORK_STRUCTURE = {
-    1: [(1, h1e1), (2, h1e2), (3, h1e3)]
+    1: [(1, h1e1), (2, h1e2), (3, h1e3)],
+    2: [(1, None), (2, None), (3, h2e3)]
 }
 
 
