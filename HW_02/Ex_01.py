@@ -76,7 +76,7 @@ print("Question (b): (theoretical) Expected Return Time from node 'a'")
 Lapl = D - L
 # stationary probability is defined as kernel of Laplacian matrix (transposed)
 Lapl_kernel = linalg.null_space(Lapl.T)
-pi_bar =  (Lapl_kernel/ Lapl_kernel.sum()).reshape(-1,)
+pi_bar =  (Lapl_kernel/Lapl_kernel.sum()).reshape(-1,)
 
 # return time according to theoretical results
 return_times = 1/(omegas * pi_bar)
