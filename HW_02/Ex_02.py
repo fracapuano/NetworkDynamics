@@ -26,6 +26,7 @@ Lapl_kernel = linalg.null_space(Lapl.T)
 pi_bar =  (Lapl_kernel/Lapl_kernel.sum()).reshape(-1,)
 # initial number of particles
 init_particles = [100, 0, 0, 0, 0]
+n_particles = sum(init_particles)
 # number of simulations
 n_simulations = int(5e3)
 
@@ -37,13 +38,19 @@ node_o, node_a, node_b, node_c, node_d = node_objects
 
 from_a = RandomWalk(start_node=node_a, nodes=node_objects, P=P)
 
-durations = np.zeros(n_simulations)
+durations = np.zeros((n_simulations, n_particles))
 for simulation in tqdm(range(n_simulations)): 
-    _, duration = from_a.walk_until(target_node=node_a)
-    durations[simulation] = duration
+    for particle in range(n_particles): 
+        _, duration = from_a.walk_until(target_node=node_a)
+        durations[simulation, particle] = duration
+
+# average duration in iteration *per particle*
+avg_perparticle = durations.mean(axis=1)
+# average over all particles
+total_avg = avg_perparticle.mean()
 
 print("Average (empirical) Return Time from node '{}' : {:.4f} t.u.".format(
-    from_a.input_start.name, durations.mean()
+    from_a.input_start.name, total_avg
 ))
 print("*"*50)
 
