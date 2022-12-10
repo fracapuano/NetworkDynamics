@@ -4,13 +4,13 @@ import matplotlib.pyplot as plt
 import random
 
 # this is useful to export plots with Latex fonts
-'''matplotlib.use("pgf")
+matplotlib.use("pgf")
 matplotlib.rcParams.update({
     "pgf.texsystem": "pdflatex",
     'font.family': 'serif',
     'text.usetex': True,
     'pgf.rcfonts': False,
-})'''
+})
 
 
 # Plot the evolution of the number of particles in each node over time
@@ -35,7 +35,7 @@ def plot_simulation(img_name, evolution_of_particles, times, trans_matrix, name_
 
     # Save image
     if save_img:
-        fig.savefig(f'./HW_02/simulation_imgs/{img_name}.png')
+        fig.savefig(f'./HW_02/simulation_imgs/{img_name}.eps')
 
 
 def plot_all_nodes_simulation(img_name, evolution_of_particles, times, trans_matrix, name_nodes, save_img=False):
@@ -61,7 +61,7 @@ def plot_all_nodes_simulation(img_name, evolution_of_particles, times, trans_mat
 
     # Save image
     if save_img:
-        fig.savefig(f'./HW_02/simulation_imgs/{img_name}.png')
+        fig.savefig(f'./HW_02/simulation_imgs/{img_name}.eps')
 
 
 # n is N(t)
