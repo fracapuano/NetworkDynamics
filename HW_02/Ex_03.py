@@ -16,9 +16,7 @@ matplotlib.rcParams.update({
 # Plot the evolution of the number of particles in each node over time
 def plot_simulation(img_name, evolution_of_particles, times, trans_matrix, name_nodes, force_one_node=None,
                     save_img=False):
-    fig = plt.figure(dpi=200, figsize=(9, 3))
-    ax = fig.add_subplot(111)
-    ax.set_position([0.075, 0.15, 0.85, 0.8])
+    fig, ax = plt.subplots() 
 
     if force_one_node is not None and isinstance(force_one_node, int) and 0 <= force_one_node < len(
             trans_matrix):
@@ -29,9 +27,11 @@ def plot_simulation(img_name, evolution_of_particles, times, trans_matrix, name_
             evolution = evolution_of_particles.T[node_index]
             ax.plot(times, evolution, label='Node ' + name_nodes[node_index], linewidth=0.8)
 
-    ax.legend(loc='center left', bbox_to_anchor=(1.0, 0.5))
-    ax.set_xlabel('Time')
-    ax.set_ylabel('Number of particles')
+    ax.legend()
+    ax.set_xlabel(r'$t$', fontsize=12)
+    ax.set_ylabel(r'$n(t)$', fontsize=12)
+    
+    fig.suptitle("Evolution of number of particles for each node (separate)")
 
     # Save image
     if save_img:
@@ -39,24 +39,18 @@ def plot_simulation(img_name, evolution_of_particles, times, trans_matrix, name_
 
 
 def plot_all_nodes_simulation(img_name, evolution_of_particles, times, trans_matrix, name_nodes, save_img=False):
-    fig = plt.figure(dpi=180, figsize=(11, 6))
-    fig.subplots_adjust(hspace=0.3)
-
-    colors = plt.cm.get_cmap('hsv', len(trans_matrix) + 1)
+    fig, ax = plt.subplots()
 
     for node_index in range(len(trans_matrix)):
         ax = fig.add_subplot(2, 3, node_index + 1)
-        ax.plot(times, evolution_of_particles.T[node_index], label='Node ' + name_nodes[node_index],
-                color=colors(node_index))
-        pos = ax.get_position()
-        ax.set_position([pos.x0, pos.y0, pos.width, pos.height * 0.85])
-        ax.set_xlabel('Time')
+        ax.plot(times, evolution_of_particles.T[node_index], label=r"Node ${}$".format(name_nodes[node_index]))
+        ax.set_xlabel(r'$t$', fontsize=12)
         if node_index == 0 or node_index == 3:
-            ax.set_ylabel('Number of particles')
+            ax.set_ylabel(r'$n(t)$', fontsize=12)
         ax.legend(
-            loc='upper center',
-            bbox_to_anchor=(0.5, 1.25),
-            ncol=3,
+            loc="upper center", 
+            bbox_to_anchor=(0.5, 1.25), 
+            ncol=3
         )
 
     # Save image
@@ -120,7 +114,7 @@ def execute():
 
     TIME_UNITS_SIMULATION = 60
     # default Poisson rate
-    ALPHA = 1
+    ALPHA = 1.125
     # number of node in this system
     N_NODES = len(Lambda)
 
