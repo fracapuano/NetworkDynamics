@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib
 import matplotlib.pyplot as plt
 import random
+from tqdm import tqdm
 
 # this is useful to export plots with Latex fonts
 matplotlib.use("pgf")
@@ -104,6 +105,9 @@ def moves(trans_matrix, index_node):
 def execute():
     # define constants of the problem
     SAVE_SIMULATION_IMAGES = True
+    SAVE_TRAJECTORIES = False
+
+    USE_SIMULATION = True
 
     Lambda = np.array([
         [0, 3 / 4, 3 / 8, 0, 0],
@@ -113,8 +117,9 @@ def execute():
         [0, 0, 0, 0, 0]])
 
     TIME_UNITS_SIMULATION = 60
+    N_SIMULATIONS = 5 if USE_SIMULATION else 1
     # default Poisson rate
-    ALPHA = 1.125
+    ALPHA = 1
     # number of node in this system
     N_NODES = len(Lambda)
 
@@ -130,90 +135,135 @@ def execute():
     name_nodes = {0: 'o', 1: 'a', 2: 'b', 3: 'c', 4: 'd'}
 
     # a) Proportional rate
-    # Number of particles in each node
-    n = np.zeros(len(Lambda))
+    trajectories, simulation_times = [], []
 
-    # Poisson clock
-    clock = 0
-    time_assix = [clock]  # it's needed to plot the evolution of the system over time
-    evolution_of_particles = np.array(
-        [np.zeros(len(Lambda))])  # it's needed to plot the evolution of the system over ti
+    print('Starting Propotional rate simulation with lambda equals to', str(ALPHA))
+    for simulation in tqdm(range(N_SIMULATIONS)):
+        # Number of particles in each node
+        n = np.zeros(len(Lambda))
 
-    print('Starting simulation a): Propotional rate')
-    while clock <= TIME_UNITS_SIMULATION:
-        (t_next, index) = next_time(w, n)
+        # Poisson clock
+        clock = 0
+        time_assix = [clock]  # it's needed to plot the evolution of the system over time
+        evolution_of_particles = np.array(
+            [np.zeros(len(Lambda))])  # it's needed to plot the evolution of the system over ti
 
-        # I've to know wether introduce a new particle on the system or moves already exist particles
-        if t_next < next_time_with_rate(ALPHA):
-            # Move already exists particles
-            if name_nodes[index] == "d":
-                # When the Poisson clock ticks for node D, you could simply decrease the number of particles in the node by one
-                # print('Move particle outside from the system')
-                if n[index] > 0:
-                    n[index] -= 1
-            else:
-                next_node = moves(P, index)  # it's the next node to receive particles
-                n[next_node] += 1
-                n[index] -= 1
-        else:
-            # Introduce new particle
-            introduce_new_particle(n)
+        print('Starting simulation a): Propotional rate')
+        while clock <= TIME_UNITS_SIMULATION:
+            (t_next, index) = next_time(w, n)
 
-        clock += min(t_next, next_time_with_rate(ALPHA))
-
-        time_assix.append(clock)
-        evolution_of_particles = np.append(evolution_of_particles, [n], axis=0)
-        print('t = %.2f' % clock + ":", n)
-
-    print('Saving simulation plots...')
-    plot_simulation('Proportional rate simulation', evolution_of_particles, time_assix, P, name_nodes
-                    , save_img=SAVE_SIMULATION_IMAGES)
-    plot_all_nodes_simulation('All nodes - Proportional rate simulation', evolution_of_particles, time_assix, P
-                              , name_nodes, save_img=SAVE_SIMULATION_IMAGES)
-
-    # b) Fixed rate
-    # Number of particles in each node
-    n = np.zeros(len(Lambda))
-
-    # Poisson clock
-    clock = 0
-    time_assix = [clock]  # it's needed to plot the evolution of the system over time
-    evolution_of_particles = np.array(
-        [np.zeros(len(Lambda))])  # it's needed to plot the evolution of the system over ti
-
-    print('Starting simulation b): Fixed rate')
-    while clock <= TIME_UNITS_SIMULATION:
-        (t_next, index) = next_time_w_rate(w)
-
-        # I've to know wether introduce a new particle on the system or moves already exist particles
-        if t_next < next_time_with_rate(ALPHA):
-            # Move already exists particles
-            if name_nodes[index] == "d":
-                # When the Poisson clock ticks for node D, you could simply decrease the number of particles in the node by one
-                # print('Move particle outside from the system')
-                if n[index] > 0:
-                    n[index] -= 1
-            else:
-                next_node = moves(P, index)  # it's the next node to receive particles
-                # print(f'Move particle from node {name_nodes[index]} to node {name_nodes[next_node]}')
-                if n[index] > 0:
+            # I've to know wether introduce a new particle on the system or moves already exist particles
+            if t_next < next_time_with_rate(ALPHA):
+                # Move already exists particles
+                if name_nodes[index] == "d":
+                    # When the Poisson clock ticks for node D, you could simply decrease the number of particles in the node by one
+                    # print('Move particle outside from the system')
+                    if n[index] > 0:
+                        n[index] -= 1
+                else:
+                    next_node = moves(P, index)  # it's the next node to receive particles
                     n[next_node] += 1
                     n[index] -= 1
-                # else:
-                # print('There are no particles in node ' + str(name_nodes[index]))
-        else:
-            # Introduce new particle
-            # print('Introduce new particle')
-            introduce_new_particle(n)
+            else:
+                # Introduce new particle
+                introduce_new_particle(n)
 
-        clock += min(t_next, next_time_with_rate(ALPHA))
+            clock += min(t_next, next_time_with_rate(ALPHA))
 
-        time_assix.append(clock)
-        evolution_of_particles = np.append(evolution_of_particles, [n], axis=0)
-        print('t = %.2f' % clock + ":", n)
+            time_assix.append(clock)
+            evolution_of_particles = np.append(evolution_of_particles, [n], axis=0)
+            print('t = %.2f' % clock + ":", n)
 
-    print('Saving simulation plots...')
-    plot_simulation('Fixed rate simulation', evolution_of_particles, time_assix, P, name_nodes,
-                    save_img=SAVE_SIMULATION_IMAGES)
-    plot_all_nodes_simulation('All nodes - Fixed rate simulation', evolution_of_particles, time_assix, P,
-                              name_nodes, save_img=SAVE_SIMULATION_IMAGES)
+        # End of the current simulation
+        trajectories.append(evolution_of_particles)
+        simulation_times.append(time_assix)
+
+    if USE_SIMULATION:
+        # Get the mean trajectory from the above simulation
+        min_trj_dimension = min([trj.shape[0] for trj in trajectories])
+        mean_evolution_of_particles = np.mean(np.array([trj[:min_trj_dimension] for trj in trajectories]), axis=0)
+        min_time_simulated = [min_time for min_time in simulation_times if len(min_time) == min_trj_dimension][0]
+
+        evolution_of_particles = mean_evolution_of_particles
+        time_assix = min_time_simulated
+
+    if SAVE_TRAJECTORIES:
+        print('Saving simulation trajectories for Proportional rate system...')
+        np.savetxt(fname="proportional_rate_trajectories.txt", X=np.array(trajectories))
+        np.savetxt(fname="proportional_rate_times.txt", X=np.array(simulation_times))
+
+    if SAVE_SIMULATION_IMAGES:
+        print('Saving simulation plots...')
+        plot_simulation(f'Proportional rate {"simulation" if USE_SIMULATION else ""}', evolution_of_particles, time_assix, P, name_nodes
+                        , save_img=SAVE_SIMULATION_IMAGES)
+        plot_all_nodes_simulation(f'All nodes - Proportional rate {"simulation" if USE_SIMULATION else ""}', evolution_of_particles, time_assix, P
+                                  , name_nodes, save_img=SAVE_SIMULATION_IMAGES)
+
+    # b) Fixed rate
+    trajectories, simulation_times = [], []
+    print('Starting Fixed rate simulation with lambda equals to', str(ALPHA))
+    for simulation in tqdm(range(N_SIMULATIONS)):
+        # Number of particles in each node
+        n = np.zeros(len(Lambda))
+
+        # Poisson clock
+        clock = 0
+        time_assix = [clock]  # it's needed to plot the evolution of the system over time
+        evolution_of_particles = np.array(
+            [np.zeros(len(Lambda))])  # it's needed to plot the evolution of the system over ti
+
+        print('Starting simulation b): Fixed rate')
+        while clock <= TIME_UNITS_SIMULATION:
+            (t_next, index) = next_time_w_rate(w)
+
+            # I've to know wether introduce a new particle on the system or moves already exist particles
+            if t_next < next_time_with_rate(ALPHA):
+                # Move already exists particles
+                if name_nodes[index] == "d":
+                    # When the Poisson clock ticks for node D, you could simply decrease the number of particles in the node by one
+                    # print('Move particle outside from the system')
+                    if n[index] > 0:
+                        n[index] -= 1
+                else:
+                    next_node = moves(P, index)  # it's the next node to receive particles
+                    # print(f'Move particle from node {name_nodes[index]} to node {name_nodes[next_node]}')
+                    if n[index] > 0:
+                        n[next_node] += 1
+                        n[index] -= 1
+                    # else:
+                    # print('There are no particles in node ' + str(name_nodes[index]))
+            else:
+                # Introduce new particle
+                # print('Introduce new particle')
+                introduce_new_particle(n)
+
+            clock += min(t_next, next_time_with_rate(ALPHA))
+
+            time_assix.append(clock)
+            evolution_of_particles = np.append(evolution_of_particles, [n], axis=0)
+            print('t = %.2f' % clock + ":", n)
+
+        # End of the current simulation
+        trajectories.append(evolution_of_particles)
+        simulation_times.append(time_assix)
+
+    if USE_SIMULATION:
+        # Get the mean trajectory from the above simulation
+        min_trj_dimension = min([trj.shape[0] for trj in trajectories])
+        mean_evolution_of_particles = np.mean(np.array([trj[:min_trj_dimension] for trj in trajectories]), axis=0)
+        min_time_simulated = [min_time for min_time in simulation_times if len(min_time) == min_trj_dimension][0]
+
+        evolution_of_particles = mean_evolution_of_particles
+        time_assix = min_time_simulated
+
+    if SAVE_TRAJECTORIES:
+        print('Saving simulation trajectories for Fixed rate system...')
+        np.savetxt(fname="fixed_rate_trajectories.txt", X=np.array(trajectories))
+        np.savetxt(fname="fiexd_rate_times.txt", X=np.array(simulation_times))
+
+    if SAVE_SIMULATION_IMAGES:
+        print('Saving simulation plots...')
+        plot_simulation(f'Fixed rate simulation {"simulation" if USE_SIMULATION else ""}', evolution_of_particles, time_assix, P, name_nodes,
+                        save_img=SAVE_SIMULATION_IMAGES)
+        plot_all_nodes_simulation(f'All nodes - Fixed rate simulation {"simulation" if USE_SIMULATION else ""}', evolution_of_particles, time_assix, P,
+                                  name_nodes, save_img=SAVE_SIMULATION_IMAGES)
