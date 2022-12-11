@@ -117,7 +117,7 @@ def execute():
         [0, 0, 0, 0, 0]])
 
     TIME_UNITS_SIMULATION = 60
-    N_SIMULATIONS = 10 if USE_SIMULATION else 1
+    N_SIMULATIONS = int(5e3) if USE_SIMULATION else 1
     # default Poisson rate
     ALPHA = 1
     # number of node in this system
