@@ -106,7 +106,6 @@ def execute():
     # define constants of the problem
     SAVE_SIMULATION_IMAGES = True
     SAVE_TRAJECTORIES = False
-
     USE_SIMULATION = True
 
     Lambda = np.array([
@@ -117,7 +116,7 @@ def execute():
         [0, 0, 0, 0, 0]])
 
     TIME_UNITS_SIMULATION = 60
-    N_SIMULATIONS = 5 if USE_SIMULATION else 1
+    N_SIMULATIONS = 10 if USE_SIMULATION else 1
     # default Poisson rate
     ALPHA = 1
     # number of node in this system
@@ -137,7 +136,7 @@ def execute():
     # a) Proportional rate
     trajectories, simulation_times = [], []
 
-    print('Starting Propotional rate simulation with lambda equals to', str(ALPHA))
+    print('Starting simulation a): Propotional rate with lambda equals to', str(ALPHA))
     for simulation in tqdm(range(N_SIMULATIONS)):
         # Number of particles in each node
         n = np.zeros(len(Lambda))
@@ -148,7 +147,6 @@ def execute():
         evolution_of_particles = np.array(
             [np.zeros(len(Lambda))])  # it's needed to plot the evolution of the system over ti
 
-        print('Starting simulation a): Propotional rate')
         while clock <= TIME_UNITS_SIMULATION:
             (t_next, index) = next_time(w, n)
 
@@ -172,11 +170,13 @@ def execute():
 
             time_assix.append(clock)
             evolution_of_particles = np.append(evolution_of_particles, [n], axis=0)
-            print('t = %.2f' % clock + ":", n)
+            if not USE_SIMULATION:
+                print('t = %.2f' % clock + ":", n)
 
         # End of the current simulation
         trajectories.append(evolution_of_particles)
         simulation_times.append(time_assix)
+    print('End of the entire simulation of Proportional rate system')
 
     if USE_SIMULATION:
         # Get the mean trajectory from the above simulation
@@ -201,7 +201,7 @@ def execute():
 
     # b) Fixed rate
     trajectories, simulation_times = [], []
-    print('Starting Fixed rate simulation with lambda equals to', str(ALPHA))
+    print('Starting simulation b): Fixed rate with lambda equals to', str(ALPHA))
     for simulation in tqdm(range(N_SIMULATIONS)):
         # Number of particles in each node
         n = np.zeros(len(Lambda))
@@ -212,7 +212,6 @@ def execute():
         evolution_of_particles = np.array(
             [np.zeros(len(Lambda))])  # it's needed to plot the evolution of the system over ti
 
-        print('Starting simulation b): Fixed rate')
         while clock <= TIME_UNITS_SIMULATION:
             (t_next, index) = next_time_w_rate(w)
 
@@ -241,11 +240,13 @@ def execute():
 
             time_assix.append(clock)
             evolution_of_particles = np.append(evolution_of_particles, [n], axis=0)
-            print('t = %.2f' % clock + ":", n)
+            if not USE_SIMULATION:
+                print('t = %.2f' % clock + ":", n)
 
         # End of the current simulation
         trajectories.append(evolution_of_particles)
         simulation_times.append(time_assix)
+    print('End of the entire simulation of Fixed rate system')
 
     if USE_SIMULATION:
         # Get the mean trajectory from the above simulation
