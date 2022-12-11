@@ -103,7 +103,8 @@ def moves(trans_matrix, index_node):
 
 
 def execute():
-    # define constants of the problem
+    # Define constants of the problem
+    # Set all these values based on what you want to do
     SAVE_SIMULATION_IMAGES = True
     SAVE_TRAJECTORIES = False
     USE_SIMULATION = True
@@ -134,8 +135,7 @@ def execute():
     name_nodes = {0: 'o', 1: 'a', 2: 'b', 3: 'c', 4: 'd'}
 
     # a) Proportional rate
-    trajectories, simulation_times = [], []
-
+    trajectories, simulation_times, last_status_simulation = [], [], []
     print('Starting simulation a): Propotional rate with lambda equals to', str(ALPHA))
     for simulation in tqdm(range(N_SIMULATIONS)):
         # Number of particles in each node
@@ -176,7 +176,10 @@ def execute():
         # End of the current simulation
         trajectories.append(evolution_of_particles)
         simulation_times.append(time_assix)
+        last_status_simulation.append(evolution_of_particles[-1])
     print('End of the entire simulation of Proportional rate system')
+    print('Mean of the node particles at the end of the simulation:',
+          np.mean(np.array(last_status_simulation), axis=0))
 
     if USE_SIMULATION:
         # Get the mean trajectory from the above simulation
@@ -200,7 +203,7 @@ def execute():
                                   , name_nodes, save_img=SAVE_SIMULATION_IMAGES)
 
     # b) Fixed rate
-    trajectories, simulation_times = [], []
+    trajectories, simulation_times, last_status_simulation = [], [], []
     print('Starting simulation b): Fixed rate with lambda equals to', str(ALPHA))
     for simulation in tqdm(range(N_SIMULATIONS)):
         # Number of particles in each node
@@ -246,7 +249,10 @@ def execute():
         # End of the current simulation
         trajectories.append(evolution_of_particles)
         simulation_times.append(time_assix)
+        last_status_simulation.append(evolution_of_particles[-1])
     print('End of the entire simulation of Fixed rate system')
+    print('Mean of the node particles at the end of the simulation:',
+          np.mean(np.array(last_status_simulation), axis=0))
 
     if USE_SIMULATION:
         # Get the mean trajectory from the above simulation
