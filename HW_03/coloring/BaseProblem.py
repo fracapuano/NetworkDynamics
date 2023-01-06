@@ -1,0 +1,84 @@
+from abc import ABC, abstractmethod
+from collections import Counter
+
+import networkx as nx
+from typing import List, Dict, Any
+
+import numpy as np
+
+from HW_03.coloring.Node import Node
+
+
+class BaseProblem(ABC):
+
+    def __init__(self, g: nx.Graph, possible_states: List, colour_map: Dict, w: np.array = None) -> None:
+        if len(colour_map.keys()) != len(possible_states):
+            raise ValueError('Length of possibile states and keys of color_map must be the same')
+        self._graph = g
+        self._states = possible_states
+        self._colors = colour_map
+
+        if w is not None:
+            self._w = w
+        else:
+            self._w = nx.to_numpy_array(g.to_undirected())
+
+        self._nodes = []
+        for node in g.nodes:
+            self._nodes.append(Node(node, ""))
+
+    @property
+    def states(self):
+        return self._states
+
+    @property
+    def weigths(self):
+        return self._w
+
+    @property
+    def nodes(self):
+        return self._nodes
+
+    @property
+    def graph(self):
+        return self._graph
+
+    @property
+    def colours(self):
+        return self._colors
+
+    @property
+    def nodes_statistics(self):
+        """Returns the number of nodes in each considered state"""
+        return Counter([i.state for i in self.nodes])
+
+    def init_nodes(self, new_state: str):
+        if new_state not in self._states:
+            raise ValueError(f'State {new_state} not in the list of possibile states')
+        for node in self._nodes:
+            node.update_state(new_state)
+
+    @abstractmethod
+    def cost_function(self, state1: Any, state2: Any):
+        pass
+
+    @abstractmethod
+    def probability_next_colour(self, t: int, node_id: int):
+        pass
+
+    @abstractmethod
+    def draw(self, name: str = "", color_mapping: Dict = None, obj_param: Any = None) -> None:
+        pass
+
+    def find_potential(self) -> float:
+        """Compute the potential in any given moment of the evolution, as per problem specification.
+        This is used to study how close to a solution the learning algorithm is.
+        Returns:
+            float: potential according to the formula given in the exercise
+        """
+        sum_W = 0
+        for node_i in self._nodes:
+            for node_j in self._nodes:
+                sum_W += self._w[node_i.id, node_j.id] * self.cost_function(node_i.state, node_j.state)
+        U = 0.5 * sum_W
+        return U
