@@ -5,3 +5,5 @@ matplotlib
 typing
 scipy
 cvxpy
+tqdm
+IPython
