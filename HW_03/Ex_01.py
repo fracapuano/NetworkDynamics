@@ -94,6 +94,7 @@ def execute():
     I_0 = [1, 3, 5, 9, 17, 32, 32, 17, 5, 2, 1, 0, 0, 0, 0]
 
     sweden_model = SwedenEpidemics(vacc, I_0)
+    # Choose here if you wanna train the entire model or just evaluate it
     sweden_model.train()
     # sweden_model.eval()
 
@@ -102,7 +103,6 @@ def execute():
     display(df_results.iloc[[0]])
     print(f"Predicted new number of infected per week: {final_results['new_infected']}")
     print(f"True new number of infected per week: {I_0}")
-    print(final_results)
     EpidemicsUtils.draw_simulation(final_results, n_weeks, mapping_name={'i': 'infected', 's': 'susceptible', 'r': 'recovered', 'v': 'vaccinated'}, name='Ex1.4_average_totals.png')
     pd.DataFrame({"Truth": I_0, "Estimation": final_results['new_infected']}).plot()\
         .get_figure().savefig('./simulation_imgs/Ex1.4_newly_infected_compared_with_truth.png')
