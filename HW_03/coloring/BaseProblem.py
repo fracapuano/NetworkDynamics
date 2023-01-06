@@ -28,42 +28,42 @@ class BaseProblem(ABC):
             self._nodes.append(Node(node, ""))
 
     @property
-    def states(self):
+    def states(self) -> List:
         return self._states
 
     @property
-    def weigths(self):
+    def weigths(self) -> np.array:
         return self._w
 
     @property
-    def nodes(self):
+    def nodes(self) -> List[Node]:
         return self._nodes
 
     @property
-    def graph(self):
+    def graph(self) -> nx.Graph:
         return self._graph
 
     @property
-    def colours(self):
+    def colours(self) -> Dict:
         return self._colors
 
     @property
-    def nodes_statistics(self):
+    def nodes_statistics(self) -> Dict:
         """Returns the number of nodes in each considered state"""
         return Counter([i.state for i in self.nodes])
 
-    def init_nodes(self, new_state: str):
+    def init_nodes(self, new_state: str) -> None:
         if new_state not in self._states:
             raise ValueError(f'State {new_state} not in the list of possibile states')
         for node in self._nodes:
             node.update_state(new_state)
 
     @abstractmethod
-    def cost_function(self, state1: Any, state2: Any):
+    def cost_function(self, state1: Any, state2: Any) -> int:
         pass
 
     @abstractmethod
-    def probability_next_colour(self, t: int, node_id: int):
+    def probability_next_colour(self, t: int, node_id: int) -> Dict:
         pass
 
     @abstractmethod
