@@ -1,4 +1,5 @@
 import math
+import os
 
 import networkx as nx
 import numpy as np
@@ -109,6 +110,8 @@ class EpidemicsUtils:
     @staticmethod
     def draw_newly_infected(final_results: dict, n_weeks: int, name: str = 'newly_infected.png') -> None:
         # The average number of newly infected individuals each week
+        if not os.path.exists("./simulation_imgs/"):
+            os.makedirs("./simulation_imgs/")
         fig = plt.figure(dpi=100, figsize=(9, 3))
         ax = fig.add_subplot(111)
         ax.set_position([0.075, 0.15, 0.85, 0.8])
@@ -124,6 +127,8 @@ class EpidemicsUtils:
         # The average total number of susceptible, infected, and recovered individuals at each week
         if mapping_name is None:
             mapping_name = {}
+        if not os.path.exists("./simulation_imgs/"):
+            os.makedirs("./simulation_imgs/")
         fig = plt.figure(dpi=100, figsize=(9, 3))
         ax = fig.add_subplot(111)
         ax.set_position([0.075, 0.15, 0.85, 0.8])

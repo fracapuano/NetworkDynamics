@@ -1,3 +1,5 @@
+import os
+
 import networkx as nx
 from typing import Dict, Any
 
@@ -17,7 +19,7 @@ class SimpleLine(BaseProblem):
 
         super().__init__(g, possible_states, colour_dict)
 
-    def cost_function(self, state1: Any, state2: Any):
+    def cost_function(self, state1: Any, state2: Any) -> int:
         """Given two states, compute the cost function.
             The cost is 1 the two states have the same colour, 0 otherwise.
             Args:
@@ -27,7 +29,7 @@ class SimpleLine(BaseProblem):
             """
         return int(state1 == state2)
 
-    def probability_next_colour(self, t: int, node_id: int):
+    def probability_next_colour(self, t: int, node_id: int) -> Dict:
         """Given a discrete timestamp t and a node previously randomly chosen, return the two conditioned probabilities describing the colour
             of `node` at time `t+1`
             Args:
@@ -54,6 +56,8 @@ class SimpleLine(BaseProblem):
     def draw(self, name: str = "Ex2.1_line_graph.png", color_mapping: Dict = None, obj_param: Any = None) -> None:
         if color_mapping is not None and list(color_mapping.keys()) != self.states:
             raise ValueError('Color mapping must have the same keys as in possible states')
+        if not os.path.exists("./coloring_imgs/"):
+            os.makedirs("./coloring_imgs/")
 
         node_colors = []
         if color_mapping is None:

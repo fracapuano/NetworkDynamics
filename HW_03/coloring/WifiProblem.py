@@ -1,3 +1,4 @@
+import os
 from typing import List, Dict, Any
 
 import matplotlib
@@ -23,7 +24,7 @@ class WifiAssignment(BaseProblem):
         super().__init__(g, possible_states, colour_map, w)
         self.routers_coords = np.loadtxt('./coloring/dataset/coords.mat')
 
-    def cost_function(self, state1: Any, state2: Any):
+    def cost_function(self, state1: Any, state2: Any) -> int:
         """Given two states, compute the cost function.
             The cost is 2 if the two states have the same colour,
             1 if the colours are 1 integer apart according to the dictionary given in the text,
@@ -42,7 +43,7 @@ class WifiAssignment(BaseProblem):
         else:
             return 0
 
-    def probability_next_colour(self, t: int, node_id: int):
+    def probability_next_colour(self, t: int, node_id: int) -> Dict:
         """Given a discrete timestamp t and a node previously randomly chosen, return the conditioned probabilities describing the colour
             of `node` at time `t+1`
             Args:
@@ -70,6 +71,8 @@ class WifiAssignment(BaseProblem):
     def draw(self, name: str = "Ex2.2_wifi_assignment.png", color_mapping: Dict = None, obj_param: Any = None) -> None:
         if obj_param is None or not isinstance(obj_param, list):
             raise ValueError('Colors map array is needed')
+        if not os.path.exists("./coloring_imgs/"):
+            os.makedirs("./coloring_imgs/")
 
         cmap = matplotlib.colors.ListedColormap(obj_param)
         node_size = [300 for i in range(len(self.graph.nodes))]
