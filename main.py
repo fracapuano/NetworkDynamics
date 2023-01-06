@@ -7,9 +7,13 @@ from HW_02.Ex_01 import execute as h2e1
 from HW_02.Ex_02 import execute as h2e2
 from HW_02.Ex_03 import execute as h2e3
 
+from HW_03.Ex_01 import execute as h3e1
+from HW_03.Ex_02 import execute as h3e2
+
 HOMEWORK_STRUCTURE = {
     1: [(1, h1e1), (2, h1e2), (3, h1e3)],
-    2: [(1, h2e1), (2, h2e2), (3, h2e3)]
+    2: [(1, h2e1), (2, h2e2), (3, h2e3)],
+    3: [(1, h3e1), (2, h3e2)]
 }
 
 
