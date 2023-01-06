@@ -129,5 +129,10 @@ dmypy.json
 .pyre/
 .DS_Store
 
+# Images generated during simulation
 *.png
 *.eps
+
+# PyCharm conf file
+*.iml
+.idea/
