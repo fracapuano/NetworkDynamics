@@ -34,9 +34,10 @@ def execute():
         potentials.append(simple_line.find_potential())
 
     # Plotting
-    pd.Series(potentials).plot()\
-        .get_figure().savefig('./coloring_imgs/Ex2.1_potentials.png')
     simple_line.draw()
+    plt.clf()
+    pd.Series(potentials).plot()\
+        .get_figure().savefig('./HW_03/coloring_imgs/Ex2.1_potentials.png')
 
     # Exercise 2.1
     print('Exercise 2.2')
@@ -61,7 +62,7 @@ def execute():
     # Plotting
     plt.clf()
     pd.Series(potentials).plot()\
-        .get_figure().savefig('./coloring_imgs/Ex2.2_potentials.png')
+        .get_figure().savefig('./HW_03/coloring_imgs/Ex2.2_potentials.png')
 
     index = np.argmin(potentials)
     print(f"Potential becomes 0 after {index} iterations")

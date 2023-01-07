@@ -12,7 +12,7 @@ class WifiAssignment(BaseProblem):
 
     def __init__(self, w: np.array = None) -> None:
         if w is None:
-            w = np.loadtxt('./coloring/dataset/wifi.mat')
+            w = np.loadtxt('./HW_03/coloring/dataset/wifi.mat')
         colour_map = {
             "red": 1, "green": 2, "blue": 3, "yellow": 4,
             "magenta": 5, "cyan": 6, "white": 7, "black": 8
@@ -21,7 +21,7 @@ class WifiAssignment(BaseProblem):
         g = nx.from_numpy_matrix(w, parallel_edges=False, create_using=nx.Graph())
 
         super().__init__(g, possible_states, colour_map, w)
-        self.routers_coords = np.loadtxt('./coloring/dataset/coords.mat')
+        self.routers_coords = np.loadtxt('./HW_03/coloring/dataset/coords.mat')
 
     def cost_function(self, state1: Any, state2: Any) -> int:
         """Given two states, compute the cost function.
