@@ -1,4 +1,3 @@
-import os
 
 import networkx as nx
 from typing import Dict, Any
@@ -56,8 +55,6 @@ class SimpleLine(BaseProblem):
     def draw(self, name: str = "Ex2.1_line_graph.png", color_mapping: Dict = None, obj_param: Any = None) -> None:
         if color_mapping is not None and list(color_mapping.keys()) != self.states:
             raise ValueError('Color mapping must have the same keys as in possible states')
-        if not os.path.exists("./coloring_imgs/"):
-            os.makedirs("./coloring_imgs/")
 
         node_colors = []
         if color_mapping is None:
@@ -67,4 +64,5 @@ class SimpleLine(BaseProblem):
 
         plt.clf()
         nx.draw(self.graph, node_color=node_colors, with_labels=True)
-        plt.savefig('./coloring_imgs/' + name, dpi=300, bbox_inches='tight')
+        plt.savefig(self.final_path + name, dpi=300, bbox_inches='tight')
+        print('Saved ' + name + ' images into ' + self.final_path + ' folder')

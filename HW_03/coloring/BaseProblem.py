@@ -1,3 +1,4 @@
+import os
 from abc import ABC, abstractmethod
 from collections import Counter
 
@@ -26,6 +27,11 @@ class BaseProblem(ABC):
         self._nodes = []
         for node in g.nodes:
             self._nodes.append(Node(node, ""))
+
+        # create output folder for simulation
+        self.final_path = "./HW_03/coloring_imgs/"
+        if not os.path.exists(self.final_path):
+            os.makedirs(self.final_path)
 
     @property
     def states(self) -> List:

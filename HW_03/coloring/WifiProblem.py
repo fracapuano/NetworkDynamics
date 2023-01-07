@@ -1,5 +1,4 @@
-import os
-from typing import List, Dict, Any
+from typing import Dict, Any
 
 import matplotlib
 import networkx as nx
@@ -71,8 +70,6 @@ class WifiAssignment(BaseProblem):
     def draw(self, name: str = "Ex2.2_wifi_assignment.png", color_mapping: Dict = None, obj_param: Any = None) -> None:
         if obj_param is None or not isinstance(obj_param, list):
             raise ValueError('Colors map array is needed')
-        if not os.path.exists("./coloring_imgs/"):
-            os.makedirs("./coloring_imgs/")
 
         cmap = matplotlib.colors.ListedColormap(obj_param)
         node_size = [300 for i in range(len(self.graph.nodes))]
@@ -82,4 +79,4 @@ class WifiAssignment(BaseProblem):
         plt.clf()
         nx.draw(self.graph, node_color=obj_param, with_labels=True, cmap=cmap, pos=coords_dict,
                 node_size=node_size, edge_color=edge_colors, edgecolors='gray', font_size=8)
-        plt.savefig('./coloring_imgs/' + name, dpi=300, bbox_inches='tight')
+        plt.savefig(self.final_path + name, dpi=300, bbox_inches='tight')

@@ -110,16 +110,17 @@ class EpidemicsUtils:
     @staticmethod
     def draw_newly_infected(final_results: dict, n_weeks: int, name: str = 'newly_infected.png') -> None:
         # The average number of newly infected individuals each week
-        if not os.path.exists("./simulation_imgs/"):
-            os.makedirs("./simulation_imgs/")
+        final_path = "./HW_03/simulation_imgs/"
+        if not os.path.exists(final_path):
+            os.makedirs(final_path)
         fig = plt.figure(dpi=100, figsize=(9, 3))
         ax = fig.add_subplot(111)
         ax.set_position([0.075, 0.15, 0.85, 0.8])
         ax.plot([i + 1 for i in range(n_weeks)], final_results['new_infected'], linewidth=0.8)
         ax.set_xlabel('Week')
         ax.set_ylabel('Number of newly infected individuals')
-        plt.savefig('./simulation_imgs/' + name)
-        print('Saved ' + name + ' images into /simulation_imgs folder')
+        plt.savefig(final_path + name)
+        print('Saved ' + name + ' images into ' + final_path + ' folder')
 
     @staticmethod
     def draw_simulation(final_results: dict, n_weeks: int, mapping_name: dict = None,
@@ -127,8 +128,9 @@ class EpidemicsUtils:
         # The average total number of susceptible, infected, and recovered individuals at each week
         if mapping_name is None:
             mapping_name = {}
-        if not os.path.exists("./simulation_imgs/"):
-            os.makedirs("./simulation_imgs/")
+        final_path = "./HW_03/simulation_imgs/"
+        if not os.path.exists(final_path):
+            os.makedirs(final_path)
         fig = plt.figure(dpi=100, figsize=(9, 3))
         ax = fig.add_subplot(111)
         ax.set_position([0.075, 0.15, 0.85, 0.8])
@@ -138,5 +140,5 @@ class EpidemicsUtils:
         ax.legend(loc='center left', bbox_to_anchor=(1.0, 0.5))
         ax.set_xlabel('Week')
         ax.set_ylabel('Number of individuals')
-        plt.savefig('./simulation_imgs/' + name)
-        print('Saved ' + name + ' images into /simulation_imgs folder')
+        plt.savefig(final_path + name)
+        print('Saved ' + name + ' images into ' + final_path + ' folder')
