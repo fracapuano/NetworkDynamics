@@ -65,6 +65,6 @@ def execute():
         .get_figure().savefig('./HW_03/coloring_imgs/Ex2.2_potentials.png')
 
     index = np.argmin(potentials)
-    print(f"Potential becomes 0 after {index} iterations")
+    print(f"Potential converges to a minimum after {index} iterations")
     color_map_graph = [node.state for node in node_states_history[index]]
     wifi_problem.draw(obj_param=color_map_graph)
