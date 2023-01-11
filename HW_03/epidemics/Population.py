@@ -159,7 +159,7 @@ class PopulationVax(Population):
                 target_n_vaccinations = self.amount_population * proportion_population_week
                 # work out the number of new vaccinations
                 n_people_to_jab = target_n_vaccinations - n_vaccinated
-                new_vaccinated = np.random.choice(range(n_nonvacc), int(n_people_to_jab), replace=False)
+                new_vaccinated = np.random.choice(non_vaccinated, int(n_people_to_jab), replace=False)
                 # vaccination is immediately effective.
                 for v in new_vaccinated:
                     self.update_individual(self._population[v].id, 'v')
