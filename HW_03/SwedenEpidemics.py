@@ -28,7 +28,7 @@ class SwedenEpidemics:
         self._training = False
 
     def simulate(self, n_grisearch: int, final_number_of_nodes: int, n_simulations: int, n_weeks: int,
-                 k: int = 13, beta: float = 0.11, rho: float = 0.437) -> Tuple[Dict, DataFrame]:
+                 k: int = 3, beta: float = 0.3871, rho: float = 0.9452) -> Tuple[Dict, DataFrame]:
         """Function to estimate k, beta, rho for the Swedish H1N1 epidemic
             Args:
                 final_number_of_nodes (int, optional): number of people in the Swedish network. Defaults to 934.
