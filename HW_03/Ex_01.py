@@ -83,7 +83,7 @@ def execute():
     # how many different gridsearches are tested
     n_gridsearch = 5
     # how many times the same configuration in a gridsearch is tested
-    NUM_SIMULATION = 100
+    NUM_SIMULATION = 10
     # for how many weeks
     n_weeks = 16
     final_number_of_nodes = 934
