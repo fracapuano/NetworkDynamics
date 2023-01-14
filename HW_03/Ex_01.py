@@ -95,8 +95,8 @@ def execute():
 
     sweden_model = SwedenEpidemics(vacc, I_0)
     # Choose here if you wanna train the entire model or just evaluate it
-    sweden_model.train()
-    # sweden_model.eval()
+    # sweden_model.train()
+    sweden_model.eval()
 
     final_results, df_results = sweden_model.simulate(n_gridsearch, final_number_of_nodes, NUM_SIMULATION, n_weeks)
     print(f"Tested configuration:")
