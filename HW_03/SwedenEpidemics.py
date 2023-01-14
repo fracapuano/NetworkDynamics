@@ -98,7 +98,7 @@ class SwedenEpidemics:
                         k = int(k)
                         #  generate the initial complete graph G0
                         G = nx.complete_graph(k + 1)
-                        G = EpidemicsUtils.generate_random_graph(G, k, final_number_of_nodes, seed=0)
+                        G = EpidemicsUtils.generate_random_graph(G, k, final_number_of_nodes)
 
                         # choose parameters
                         for beta in parameter_space["Beta"]:
@@ -114,8 +114,8 @@ class SwedenEpidemics:
                                 p_vax = PopulationVax(individuals, G, sir_model_with_vax, self.vax_scheme)
                                 recap_per_week = EpidemicsUtils.simulate_epidemics_n_times(p_vax, n_simulations,
                                                                                            n_weeks, n_infected_t0=1,
-                                                                                           beta=beta, rho=rho, seed=0)
-                                # recap_per_week = simulate_contagion(G, beta, rho, N, n_weeks, n_infected_t0=1, vaccination_scheme=vaccination_scheme, seed=0)
+                                                                                           beta=beta, rho=rho)
+                                
                                 # compute I_t
                                 I_t = recap_per_week["new_infected"]
                                 # compute RMSE
