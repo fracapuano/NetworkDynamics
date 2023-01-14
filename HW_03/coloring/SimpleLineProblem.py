@@ -28,7 +28,7 @@ class SimpleLine(BaseProblem):
             """
         return int(state1 == state2)
 
-    def probability_next_colour(self, t: int, node_id: int) -> Dict:
+    def probability_next_colour(self, t: int, node_id: int, etachoice: int) -> Dict:
         """Given a discrete timestamp t and a node previously randomly chosen, return the two conditioned probabilities describing the colour
             of `node` at time `t+1`
             Args:

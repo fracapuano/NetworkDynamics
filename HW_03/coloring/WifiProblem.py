@@ -42,7 +42,7 @@ class WifiAssignment(BaseProblem):
         else:
             return 0
 
-    def probability_next_colour(self, t: int, node_id: int) -> Dict:
+    def probability_next_colour(self, t: int, node_id: int, etachoice: int) -> Dict:
         """Given a discrete timestamp t and a node previously randomly chosen, return the conditioned probabilities describing the colour
             of `node` at time `t+1`
             Args:
@@ -51,7 +51,19 @@ class WifiAssignment(BaseProblem):
             Returns:
                 dict: dictionary. For each possible colour (key), it gives the probabilities for the node to be of that colour at time t+1.
             """
-        nu = t / 100
+        #First option, the one of exercise 2.2
+        if etachoice == 0:
+            nu = t / 100
+        #The following are the four possible choices of eta presented in exercise 2.3
+        elif etachoice == 1:
+            nu = 0
+        elif etachoice == 2:
+            nu = 3
+        elif etachoice == 3:
+            nu = 100
+        else:
+            nu = (t**4) / 100
+            
         # this dictionary will contain the probabilities, following the formula given in the text
         probabilities = {}
         for s in self.states:
@@ -63,7 +75,9 @@ class WifiAssignment(BaseProblem):
             probabilities[s] = np.exp(-1 * nu * (self.weigths[node_id, :] @ c))
 
         # normalise the entries so that they sum up to 1
-        probabilities = {key: value / sum(probabilities.values()) for key, value in probabilities.items()}
+        # np.nansum is used because with the fourth choice of eta some probabilities are so small that they are considered
+        # as nan by python. With np.nansum these values are considered equal to zero when summing
+        probabilities = {key: value / np.nansum(list(probabilities.values())) for key, value in probabilities.items()}
 
         return probabilities
 
