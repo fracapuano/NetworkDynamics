@@ -58,10 +58,8 @@ class BaseProblem(ABC):
         """Returns the number of nodes in each considered state"""
         return Counter([i.state for i in self.nodes])
 
-    def init_nodes(self, new_state: str) -> None:
-        if new_state not in self._states:
-            raise ValueError(f'State {new_state} not in the list of possibile states')
-        for node in self._nodes:
+    def init_nodes(self, colorlist: list) -> None:
+        for node, new_state in zip(self._nodes, colorlist):
             node.update_state(new_state)
 
     @abstractmethod
@@ -69,7 +67,7 @@ class BaseProblem(ABC):
         pass
 
     @abstractmethod
-    def probability_next_colour(self, t: int, node_id: int) -> Dict:
+    def probability_next_colour(self, t: int, node_id: int, etachoice: int) -> Dict:
         pass
 
     @abstractmethod
