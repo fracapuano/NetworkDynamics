@@ -137,7 +137,7 @@ class PopulationVax(Population):
         }
         recap_per_week["new_infected"] = np.zeros(n_weeks)
         recap_per_week["new_vaccinated"] = np.zeros(n_weeks)
-        # initialise the status of the system at t = 0. We start with all S and 10 random I.
+        # initialise the status of the system at t = 0. We start with all S and n_infected_t0 random I.
         for idx in self.population:
             self.update_individual(idx.id, 's')
         infected_nodes = np.random.choice(range(self.amount_population), size=n_infected_t0, replace=False)
@@ -162,7 +162,7 @@ class PopulationVax(Population):
                 new_vaccinated = np.random.choice(non_vaccinated, int(n_people_to_jab), replace=False)
                 # vaccination is immediately effective.
                 for v in new_vaccinated:
-                    self.update_individual(self._population[v].id, 'v')
+                    self.update_individual(v.id, 'v')
             else:
                 new_vaccinated = []
 
@@ -201,6 +201,7 @@ class PopulationVax(Population):
             # how many individuals in total are susceptible/infected/recovered at each week (to answer question 1.1.2)
             for state, number in self.population_statistics.items():
                 recap_per_week[state][week] = number
+                
             recap_per_week["new_infected"][week] = len(new_infected)
             recap_per_week["new_vaccinated"][week] = len(new_vaccinated)
 
