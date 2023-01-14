@@ -103,6 +103,3 @@ def execute():
     display(df_results.iloc[[0]])
     print(f"Predicted new number of infected per week: {final_results['new_infected']}")
     print(f"True new number of infected per week: {I_0}")
-    EpidemicsUtils.draw_simulation(final_results, n_weeks, mapping_name={'i': 'infected', 's': 'susceptible', 'r': 'recovered', 'v': 'vaccinated'}, name='Ex1.4_average_totals.png')
-    pd.DataFrame({"Truth": I_0, "Estimation": final_results['new_infected']}).plot()\
-        .get_figure().savefig('./simulation_imgs/Ex1.4_newly_infected_compared_with_truth.png')
