@@ -83,26 +83,23 @@ def execute():
     # how many different gridsearches are tested
     n_gridsearch = 5
     # how many times the same configuration in a gridsearch is tested
-    NUM_SIMULATION = 100
+    NUM_SIMULATION = 10
     # for how many weeks
-    n_weeks = 15
+    n_weeks = 16
     final_number_of_nodes = 934
     # define Vacc(t)
-    vacc = np.ones(n_weeks) * 0.60
-    vacc[[0, 1, 2, 3, 4, 5, 6, 7, 8]] = [0.05, 0.09, 0.16, 0.24, 0.32, 0.40, 0.47, 0.54, 0.59]
+    vacc = np.array([5, 9, 16, 24, 32, 40, 47, 54, 59, 60, 60, 60, 60, 60, 60, 60])
+    vacc = (vacc / vacc.sum()).tolist()
     # set the ground truth, as per problem specifications
-    I_0 = [1, 3, 5, 9, 17, 32, 32, 17, 5, 2, 1, 0, 0, 0, 0]
+    I_0 = [1, 1, 3, 5, 9, 17, 32, 32, 17, 5, 2, 1, 0, 0, 0, 0]
 
     sweden_model = SwedenEpidemics(vacc, I_0)
     # Choose here if you wanna train the entire model or just evaluate it
-    sweden_model.train()
-    # sweden_model.eval()
+    # sweden_model.train()
+    sweden_model.eval()
 
     final_results, df_results = sweden_model.simulate(n_gridsearch, final_number_of_nodes, NUM_SIMULATION, n_weeks)
     print(f"Tested configuration:")
     display(df_results.iloc[[0]])
     print(f"Predicted new number of infected per week: {final_results['new_infected']}")
     print(f"True new number of infected per week: {I_0}")
-    EpidemicsUtils.draw_simulation(final_results, n_weeks, mapping_name={'i': 'infected', 's': 'susceptible', 'r': 'recovered', 'v': 'vaccinated'}, name='Ex1.4_average_totals.png')
-    pd.DataFrame({"Truth": I_0, "Estimation": final_results['new_infected']}).plot()\
-        .get_figure().savefig('./simulation_imgs/Ex1.4_newly_infected_compared_with_truth.png')

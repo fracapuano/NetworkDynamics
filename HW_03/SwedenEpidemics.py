@@ -17,7 +17,7 @@ class SwedenEpidemics:
     def __init__(self, vaccination_scheme: Iterable[int], ground_truth: Iterable[int]) -> None:
         self.vax_scheme = vaccination_scheme
         self.truth = ground_truth
-        self._training = True
+        self._training = False
 
         self.DELTA_BETA_THRESHOLD = 0.0001
 
@@ -28,7 +28,7 @@ class SwedenEpidemics:
         self._training = False
 
     def simulate(self, n_grisearch: int, final_number_of_nodes: int, n_simulations: int, n_weeks: int,
-                 k: int = 13, beta: float = 0.11, rho: float = 0.437) -> Tuple[Dict, DataFrame]:
+                 k: int = 3, beta: float = 0.3871, rho: float = 0.5992) -> Tuple[Dict, DataFrame]:
         """Function to estimate k, beta, rho for the Swedish H1N1 epidemic
             Args:
                 final_number_of_nodes (int, optional): number of people in the Swedish network. Defaults to 934.
@@ -177,15 +177,15 @@ class SwedenEpidemics:
 
         #  generate the initial complete graph G0
         G = nx.complete_graph(k + 1)
-        G = EpidemicsUtils.generate_random_graph(G, k, final_number_of_nodes, seed=0)
+        G = EpidemicsUtils.generate_random_graph(G, k, final_number_of_nodes)
         sir_model_with_vax = EpidemicsModel('sir_with_vax', ['s', 'i', 'r', 'v'])
         individuals = EpidemicsUtils.from_graph_to_individuals(G, sir_model_with_vax)
         p_vax = PopulationVax(individuals, G, sir_model_with_vax, self.vax_scheme)
         recap_per_week = EpidemicsUtils.simulate_epidemics_n_times(p_vax, n_simulations, n_weeks, n_infected_t0=1,
-                                                                   beta=beta, rho=rho, seed=0)
+                                                                   beta=beta, rho=rho)
         #recap_per_week = simulate_contagion(G, beta, rho, N, n_weeks, vaccination_scheme=vaccination_scheme, n_infected_t0=1, seed=0)
         I_t = recap_per_week["new_infected"]
-        RMSE = np.sqrt(np.sum((I_t - self.truth) ** 2) / 15)
+        RMSE = np.sqrt(np.sum((I_t - self.truth) ** 2) / len(I_t))
 
         if self._training:
             return recap_per_week, df_results.sort_values(by="RMSE", ascending=True)
