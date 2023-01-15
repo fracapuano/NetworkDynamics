@@ -42,6 +42,10 @@ def main():
         print('Not a valid homerwork or exercise number')
         exit(-1)
 
+    # BUG fixing...
+    if args.homework == 3 and args.exercise == 1:
+        raise ValueError("Homework 3 Exercise 1 cannot be executed from here! Please check `HW3_Ex1.ipynb` in the HW_03 folder.")
+
     # Execution of homework
     HOMEWORK_STRUCTURE[args.homework][args.exercise - 1][1]()
 

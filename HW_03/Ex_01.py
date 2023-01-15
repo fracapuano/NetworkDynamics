@@ -89,7 +89,7 @@ def execute():
     final_number_of_nodes = 934
     # define Vacc(t)
     vacc = np.array([5, 9, 16, 24, 32, 40, 47, 54, 59, 60, 60, 60, 60, 60, 60, 60])
-    vacc = (vacc / vacc.sum()).tolist()
+    vacc = vacc / 100
     # set the ground truth, as per problem specifications
     I_0 = [1, 1, 3, 5, 9, 17, 32, 32, 17, 5, 2, 1, 0, 0, 0, 0]
 
