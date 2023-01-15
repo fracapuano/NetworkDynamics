@@ -68,6 +68,9 @@ Then, you can run the program in this way:
 python main.py --homework number_of_homework --exercise number_of_exercise 
 ```
 
+### WARNING 
+Our code for Exercise 1 in Homework 3 is presented in [this notebook](https://github.com/fracapuano/NetworkDynamics/blob/main/HW_03/HW3_Ex1.ipynb).
+
 -------------------------------------------------------------
 
 ## Contacts
